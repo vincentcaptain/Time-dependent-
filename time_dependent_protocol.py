@@ -62,12 +62,12 @@ def waiting_time(omega, total = 10, dt = 0.01, r0 = - 3, m = 1, gamma = 1, epsil
 # 	pp.close()
 # 	plt.show()
 
-omega = list(range(1, 30))
-o = [-i/4 for i in omega] + [i / 4 for i in omega]
+omega = list(range(1, 70))
+o = [-i/10 for i in omega] + [i / 10 for i in omega]
 omega = sorted(o)
 
 result = waiting_time(omega)
-np.savetxt("rate.txt", result)
+np.savetxt("rate_accurate.txt", result)
 # plotting(omega, result)
 
 
