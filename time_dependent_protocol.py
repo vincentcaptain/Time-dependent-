@@ -62,7 +62,7 @@ def waiting_time(omega, total = 10, dt = 0.01, r0 = - 3, m = 1, gamma = 1, epsil
 # 	pp.close()
 # 	plt.show()
 
-omega = list(range(1, 70))
+omega = list(range(1, 75))
 o = [-i/10 for i in omega] + [i / 10 for i in omega]
 omega = sorted(o)
 
