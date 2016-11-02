@@ -9,7 +9,7 @@
 #SBATCH --partition=savio2
 #
 # Wall clock limit:
-#SBATCH --time=10:00:00
+#SBATCH --time=30:00:00
 #
 # Mail type:
 #SBATCH --mail-type=all
