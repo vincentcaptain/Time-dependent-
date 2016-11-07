@@ -17,4 +17,4 @@
 # Mail user:
 #SBATCH --mail-user=vincentcaptain@berkeley.edu
 ## Command(s) to run:
-python time_dependent_protocol.py
+python3.5 time_dependent_protocol.py
