@@ -41,8 +41,10 @@ def waiting_time(i, total = 10, dt = 0.01, r0 = - 10, m = 1, gamma = 1, epsilon 
 			indicator_count += 1
 		if (left and r0 > 0):
 			left = not left
+			cross_count += 1
 		if (not left and r0 < 0):
 			left = not left
+			cross_count += 1
 	k = total / t_continue
 	probability = indicator_count / t_continue
 	return k, p_final
