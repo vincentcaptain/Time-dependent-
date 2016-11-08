@@ -48,8 +48,8 @@ def waiting_time(i, total = 10, dt = 0.01, r0 = - 3, m = 1, gamma = 1, epsilon =
 			indicator_count += 1
 		loop_count += 1
 	k = total / np.mean(crossing_collection) / 2
-	probability = indicator_count / loop_count / dt
-	return k, probability
+	log_probability = np.log(indicator_count / loop_count / dt)
+	return k, log_probability
 
 
 # def plottingk(x, y):
