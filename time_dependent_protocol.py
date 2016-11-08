@@ -29,7 +29,8 @@ def waiting_time(i, total = 10, dt = 0.01, r0 = - 3, m = 1, gamma = 1, epsilon =
 	"""
 	t_continue, t_count, t_collection, crossing_collection, r_collection, left = 0, 0, [0], [], [r0], True
 	p_half, p, c = 0, 0, rescaling_c(dt, gamma)
-	indicator_count, p_upper, p_lower, loop_count = 0, 1, -1, 1
+	indicator_count, p_upper, p_lower, loop_count = 0, 0.1, -0.1, 1
+	probability = []
 	while len(crossing_collection) < total:
 		one_fourth_random = Xi(gamma, beta, m, dt)
 		three_fourth_random = Xi(gamma, beta, m, dt)
@@ -38,18 +39,19 @@ def waiting_time(i, total = 10, dt = 0.01, r0 = - 3, m = 1, gamma = 1, epsilon =
 		t_continue += dt
 		t_count += dt
 		p = (p_half + F_1D(r0, t_continue, i, epsilon) * c * dt / 2) * np.exp(- gamma * dt / 2) + three_fourth_random
+		if r0 >= p_lower and r0 <= p_upper:
+			indicator_count += 1
 		if (left and r0 > 0):
 			left = not left
 		if (not left and r0 < 0):
 			left = not left
 			crossing_collection += [t_count]
+			probability += [indicator_count / t_count]
 			t_count = 0
-		if r0 >= p_lower and r0 <= p_upper:
-			indicator_count += 1
-		loop_count += 1
+			indicator_count = 0
 	k = total / np.mean(crossing_collection) / 2
-	log_probability = np.log(indicator_count / loop_count / dt)
-	return k, log_probability
+	p_final = np.mean(probability)
+	return k, p_final
 
 
 # def plottingk(x, y):
