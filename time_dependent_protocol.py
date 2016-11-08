@@ -1,7 +1,7 @@
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.mlab as mlab
-from matplotlib.backends.backend_pdf import PdfPages
+# import matplotlib.pyplot as plt
+# import matplotlib.mlab as mlab
+# from matplotlib.backends.backend_pdf import PdfPages
 from joblib import Parallel, delayed
 import multiprocessing
 
@@ -52,25 +52,25 @@ def waiting_time(i, total = 10, dt = 0.01, r0 = - 3, m = 1, gamma = 1, epsilon =
 	return k, probability
 
 
-def plottingk(x, y):
-	plt.plot(x, y[0])
-	plt.xlabel('Omega')
-	plt.ylabel('rate')
-	ax = plt.gca()
-	ax.set_ylim([min(y)*1.1, max(y)*1.1])
-	pp = PdfPages('rate.pdf')
-	pp.savefig()
-	pp.close()
+# def plottingk(x, y):
+# 	plt.plot(x, y[0])
+# 	plt.xlabel('Omega')
+# 	plt.ylabel('rate')
+# 	ax = plt.gca()
+# 	ax.set_ylim([min(y)*1.1, max(y)*1.1])
+# 	pp = PdfPages('rate.pdf')
+# 	pp.savefig()
+# 	pp.close()
 
-def plottingp(x, y):
-	plt.plot(x, y[1])
-	plt.xlabel('Omega')
-	plt.ylabel('rate')
-	ax = plt.gca()
-	ax.set_ylim([min(y)*1.1, max(y)*1.1])
-	pp = PdfPages('probability.pdf')
-	pp.savefig()
-	pp.close()
+# def plottingp(x, y):
+# 	plt.plot(x, y[1])
+# 	plt.xlabel('Omega')
+# 	plt.ylabel('rate')
+# 	ax = plt.gca()
+# 	ax.set_ylim([min(y)*1.1, max(y)*1.1])
+# 	pp = PdfPages('probability.pdf')
+# 	pp.savefig()
+# 	pp.close()
 
 omega = list(range(1, 75))
 o = [-i/10 for i in omega] + [i / 10 for i in omega]
@@ -84,8 +84,8 @@ num_cores = multiprocessing.cpu_count()
 results = Parallel(n_jobs = num_cores)(delayed(process_waiting_time)(i) for i in omega)
 
 np.savetxt("rate_accurate.txt", results)
-plottingk(omega, result[0])
-plottingp(omega, result[1])
+# plottingk(omega, result[0])
+# plottingp(omega, result[1])
 
 
 
