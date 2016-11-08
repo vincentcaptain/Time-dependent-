@@ -47,7 +47,7 @@ def waiting_time(i, total = 10, dt = 0.01, r0 = - 5, m = 1, gamma = 1, epsilon =
 			cross_count += 1
 	k = total / t_continue
 	probability = indicator_count / t_continue
-	return k, p_final
+	return k, probability
 
 
 # def plottingk(x, y):
