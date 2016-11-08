@@ -16,7 +16,7 @@ F_1D = lambda r, t, omega, epsilon: - r ** 3 + 9 * r - epsilon * np.sin(omega * 
 Xi = lambda gamma, beta, m, dt: np.random.normal(scale = np.sqrt(2 * m / beta * (1 - np.exp(- gamma * dt))))
 rescaling_c = lambda dt, gamma: np.sqrt(2 / gamma / dt * np.tanh(gamma * dt / 2))
 
-def waiting_time(i, total = 10, dt = 0.01, r0 = - 10, m = 1, gamma = 1, epsilon = 2, beta = 1):
+def waiting_time(i, total = 10, dt = 0.01, r0 = - 5, m = 1, gamma = 1, epsilon = 2, beta = 1):
 	"""
 	Parameters required for this simulation: time difference dt, initial position
 	r0, mass of particle m, damping constant gamma, time-dependent part Parameter
@@ -27,7 +27,7 @@ def waiting_time(i, total = 10, dt = 0.01, r0 = - 10, m = 1, gamma = 1, epsilon 
 	half dt, and position every dt; count the time it crosses the barrier until
 	10 times, finding the average time scale;
 	"""
-	t_continue, t_collection, r_collection, left = 0, [0], [r0], True
+	t_continue, t_collection, left = 0, [0], True
 	p_half, p, c = 0, 0, rescaling_c(dt, gamma)
 	indicator_count, p_upper, p_lower, cross_count = 0, 0.05, -0.05, 0
 	while cross_count < total:
