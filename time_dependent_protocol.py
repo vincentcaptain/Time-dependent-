@@ -29,7 +29,7 @@ def waiting_time(i, total = 10, dt = 0.01, r0 = - 3, m = 1, gamma = 1, epsilon =
 	"""
 	t_continue, t_count, t_collection, crossing_collection, r_collection, left = 0, 0, [0], [], [r0], True
 	p_half, p, c = 0, 0, rescaling_c(dt, gamma)
-	indicator_count, p_upper, p_lower, loop_count = 0, 0.1, -0.1, 1
+	indicator_count, p_upper, p_lower, loop_count = 0, 0.05, -0.05, 1
 	probability = []
 	while len(crossing_collection) < total:
 		one_fourth_random = Xi(gamma, beta, m, dt)
