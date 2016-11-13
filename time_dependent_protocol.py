@@ -1,7 +1,7 @@
 import numpy as np
-# import matplotlib.pyplot as plt
-# import matplotlib.mlab as mlab
-# from matplotlib.backends.backend_pdf import PdfPages
+import matplotlib.pyplot as plt
+import matplotlib.mlab as mlab
+from matplotlib.backends.backend_pdf import PdfPages
 from joblib import Parallel, delayed
 import multiprocessing
 
@@ -49,6 +49,60 @@ def waiting_time(i, total = 10, dt = 0.01, r0 = - 5, m = 1, gamma = 1, epsilon =
 	probability = indicator_count / t_continue
 	return k, probability
 
+def initial_flux(omega, From, To, limit = 0.5, dt = 0.01, m = 1, gamma = 1, epsilon = 2, beta = 1):
+	"""
+	Initial flux is calculated by # of reach / t_obs, where # of reach should not be too far away.
+	The same position and velocity propagation and update methods as waiting_time.
+	"""
+	r0, t_obs = From, 0
+	while r0 < To:
+		one_fourth_random = Xi(gamma, beta, m, dt)
+		three_fourth_random = Xi(gamma, beta, m, dt)
+		p_half = p * np.exp(- gamma * dt / 2) + one_fourth_random + F_1D(r0, t_obs, i, epsilon) * c * dt / 2
+		r0 = r0 + p_half * c * dt / m
+		t_obs += dt
+		p = (p_half + F_1D(r0, t_obs, i, epsilon) * c * dt / 2) * np.exp(- gamma * dt / 2) + three_fourth_random
+	if r0 > To + limit:
+		return t_obs, False
+	else:
+		return t_obs, True
+
+def initial_prob(omega, From, To, limit = 0.5, dt = 0.01, m = 1, gamma = 1, epsilon = 2, beta = 1):
+	"""
+	Initial probability is calculated by # of reach / total # of attempts.
+	"""
+	r0, i, t_obs = From, 0, 0
+	while r0 < To:
+		one_fourth_random = Xi(gamma, beta, m, dt)
+		three_fourth_random = Xi(gamma, beta, m, dt)
+		p_half = p * np.exp(- gamma * dt / 2) + one_fourth_random + F_1D(r0, t_obs, i, epsilon) * c * dt / 2
+		r0 = r0 + p_half * c * dt / m
+		t_obs += dt
+		p = (p_half + F_1D(r0, t_obs, i, epsilon) * c * dt / 2) * np.exp(- gamma * dt / 2) + three_fourth_random
+		i += 1
+	if r0 > To + limit:
+		return 1 / i, False
+	else:
+		return 1 / i, True
+
+def transition_prob(omega, From, To, limit = 0.5, dt = 0.01, m = 1, gamma = 1, epsilon = 2, beta = 1):
+	forward, backward, r0, t_obs = 0, 0, From, 0
+	while forward < 20:
+		one_fourth_random = Xi(gamma, beta, m, dt)
+		three_fourth_random = Xi(gamma, beta, m, dt)
+		p_half = p * np.exp(- gamma * dt / 2) + one_fourth_random + F_1D(r0, t_obs, i, epsilon) * c * dt / 2
+		r0 = r0 + p_half * c * dt / m
+		t_obs += dt
+		p = (p_half + F_1D(r0, t_obs, i, epsilon) * c * dt / 2) * np.exp(- gamma * dt / 2) + three_fourth_random
+		if r0 >= To or r0 <= From:
+			if r0 <= To + limit:
+				forward += 1
+			if r0 >= From - limit:
+				backward += 1
+			r0 = From
+			t_obs = 0
+	return forward / (forward + backward)
+
 
 # def plottingk(x, y):
 # 	plt.plot(x, y[0])
@@ -77,13 +131,58 @@ omega = sorted(o)
 def process_waiting_time(omega):
 	return waiting_time(omega)
 
-num_cores = multiprocessing.cpu_count()
+def process_initial_flux(omega, num_cross, From, To):
+	i, t_obs = 0, 0
+	while i < num_cross:
+		t = initial_flux(omega, From, To)
+		if t[1]:
+			t_obs += t[0]
+			i += 1
+	return num_cross / t_obs 
 
-results = Parallel(n_jobs = num_cores)(delayed(process_waiting_time)(i) for i in omega)
+def process_initial_prob(omega, sample_size, From, To):
+	i, p_obs = 0, []
+	while i < sample_size:
+		p = initial_prob(omega, From, To)
+		if p[1]:
+			p_obs += [p[0]]
+			i += 1
+	return np.mean(p_obs) 
 
-np.savetxt("rate_accurate.txt", results)
-# plottingk(omega, result[0])
-# plottingp(omega, result[1])
+def process_transitional_prob(omega, sample_size, From, To):
+	i, p_obs = 0, []
+	while i < sample_size:
+		p_obs += [transition_prob(omega, From, To)]
+	return np.mean(p_obs)
+
+
+def total_prob(omega, sample_size, interval, Steps, starting):
+	"""
+	interval describes the range of calculation for transition_prob,
+	Steps describes number of transition_prob we calculated, and 
+	starting is the starting position of the particle.
+	"""
+	difference = (interval[1] - interval[0]) / Steps
+	From = starting
+	To = interval[0]
+	pi_zero = process_initial_prob(omega, sample_size, From, To)
+	final_p, p_track = pi_zero, [pi_zero]
+	while To <= interval[1]:
+		From = To
+		To += difference
+		trans_p = process_transitional_prob(omega, sample_size, From, To)
+		final_p *= trans_p
+		p_track += [final_p]
+	return final_p, p_track
+
+def accurate_k(omega, sample_size, interval, starting, final_p):
+	flux = process_initial_flux(omega, sample_size, starting, interval[0])
+	return flux * final_p
+		
+
+
+
+
 
 
 
