@@ -49,12 +49,13 @@ def waiting_time(i, total = 10, dt = 0.01, r0 = - 5, m = 1, gamma = 1, epsilon =
 	probability = indicator_count / t_continue
 	return k, probability
 
-def initial_flux(omega, From, To, limit = 0.5, dt = 0.01, m = 1, gamma = 1, epsilon = 2, beta = 1):
+def initial_flux(i, From, To, limit = 0.5, dt = 0.01, m = 1, gamma = 1, epsilon = 2, beta = 1):
 	"""
 	Initial flux is calculated by # of reach / t_obs, where # of reach should not be too far away.
 	The same position and velocity propagation and update methods as waiting_time.
 	"""
 	r0, t_obs = From, 0
+	p_half, p, c = 0, 0, rescaling_c(dt, gamma)
 	while r0 < To:
 		one_fourth_random = Xi(gamma, beta, m, dt)
 		three_fourth_random = Xi(gamma, beta, m, dt)
@@ -67,11 +68,12 @@ def initial_flux(omega, From, To, limit = 0.5, dt = 0.01, m = 1, gamma = 1, epsi
 	else:
 		return t_obs, True
 
-def initial_prob(omega, From, To, limit = 0.5, dt = 0.01, m = 1, gamma = 1, epsilon = 2, beta = 1):
+def initial_prob(i, From, To, limit = 0.5, dt = 0.01, m = 1, gamma = 1, epsilon = 2, beta = 1):
 	"""
 	Initial probability is calculated by # of reach / total # of attempts.
 	"""
-	r0, i, t_obs = From, 0, 0
+	r0, j, t_obs = From, 0, 0
+	p_half, p, c = 0, 0, rescaling_c(dt, gamma)
 	while r0 < To:
 		one_fourth_random = Xi(gamma, beta, m, dt)
 		three_fourth_random = Xi(gamma, beta, m, dt)
@@ -79,14 +81,15 @@ def initial_prob(omega, From, To, limit = 0.5, dt = 0.01, m = 1, gamma = 1, epsi
 		r0 = r0 + p_half * c * dt / m
 		t_obs += dt
 		p = (p_half + F_1D(r0, t_obs, i, epsilon) * c * dt / 2) * np.exp(- gamma * dt / 2) + three_fourth_random
-		i += 1
+		j += 1
 	if r0 > To + limit:
-		return 1 / i, False
+		return 1 / j, False
 	else:
-		return 1 / i, True
+		return 1 / j, True
 
-def transition_prob(omega, From, To, limit = 0.5, dt = 0.01, m = 1, gamma = 1, epsilon = 2, beta = 1):
+def transition_prob(i, From, To, limit = 0.5, dt = 0.01, m = 1, gamma = 1, epsilon = 2, beta = 1):
 	forward, backward, r0, t_obs = 0, 0, From, 0
+	p_half, p, c = 0, 0, rescaling_c(dt, gamma)
 	while forward < 20:
 		one_fourth_random = Xi(gamma, beta, m, dt)
 		three_fourth_random = Xi(gamma, beta, m, dt)
@@ -101,6 +104,7 @@ def transition_prob(omega, From, To, limit = 0.5, dt = 0.01, m = 1, gamma = 1, e
 				backward += 1
 			r0 = From
 			t_obs = 0
+			p_half, p = 0, 0
 	return forward / (forward + backward)
 
 
