@@ -87,7 +87,7 @@ def initial_prob(i, From, To, unused, limit = 0.5, dt = 0.01, m = 1, gamma = 1, 
 	else:
 		return 1 / j, True
 
-def transition_prob(i, From, To, limit = 0.5, dt = 0.01, m = 1, gamma = 1, epsilon = 2, beta = 1):
+def transition_prob(i, From, To, limit = 0.05, dt = 0.01, m = 1, gamma = 1, epsilon = 2, beta = 1):
 	forward, backward, r0, t_obs = 0, 0, From, 0
 	p_half, p, c = 0, 0, rescaling_c(dt, gamma)
 	while forward < 20:
@@ -97,11 +97,15 @@ def transition_prob(i, From, To, limit = 0.5, dt = 0.01, m = 1, gamma = 1, epsil
 		r0 = r0 + p_half * c * dt / m
 		t_obs += dt
 		p = (p_half + F_1D(r0, t_obs, i, epsilon) * c * dt / 2) * np.exp(- gamma * dt / 2) + three_fourth_random
-		if r0 >= To or r0 <= From:
-			if r0 <= To + limit:
-				forward += 1
-			if r0 >= From - limit:
-				backward += 1
+		if r0 >= To and r0 <= To + limit:
+			forward += 1
+			print(r0, forward)
+			r0 = From
+			t_obs = 0
+			p_half, p = 0, 0
+		if r0 <= From and r0 >= From - limit:
+			backward += 1
+			print(r0, backward)
 			r0 = From
 			t_obs = 0
 			p_half, p = 0, 0
@@ -153,6 +157,9 @@ def process_initial_prob(omega, sample_size, From, To):
 			i += 1
 	return np.mean(p_obs) 
 
+def process_transitional_prob(omega, From, To):
+	return transition_prob(omega, From, To)
+
 
 def total_prob(omega, sample_size, interval, Steps, starting):
 	"""
@@ -190,10 +197,10 @@ steps = 60
 starting = -4
 p = Parallel(n_jobs = num_cores)(delayed(initial_prob)(2, starting, interval[0], i) for i in list(range(0, 20)))
 init_p = np.mean(p)
-trans_p = Parallel(n_jobs = num_cores)(delayed(process_transitional_prob)(2, interval[i], interval[i + 1]) for i in l)
-final_p = [init_p] + trans_p
+# trans_p = Parallel(n_jobs = num_cores)(delayed(process_transitional_prob)(2, interval[i], interval[i + 1]) for i in l)
+# final_p = trans_p
 # flux = Parallel(n_jobs = num_cores)(delayed(process_initial_flux)(i, sample_size, starting, interval[0]) for i in omega)
-np.savetxt("final_p.txt", final_p)
+# np.savetxt("final_p.txt", final_p)
 # np.savetxt("flux.txt", flux)
 
 
