@@ -68,7 +68,7 @@ def initial_flux(i, From, To, limit = 0.5, dt = 0.01, m = 1, gamma = 1, epsilon 
 	else:
 		return t_obs, True
 
-def initial_prob(i, From, To, limit = 0.5, dt = 0.01, m = 1, gamma = 1, epsilon = 2, beta = 1):
+def initial_prob(i, From, To, unused, limit = 0.5, dt = 0.01, m = 1, gamma = 1, epsilon = 2, beta = 1):
 	"""
 	Initial probability is calculated by # of reach / total # of attempts.
 	"""
@@ -153,9 +153,6 @@ def process_initial_prob(omega, sample_size, From, To):
 			i += 1
 	return np.mean(p_obs) 
 
-def process_transitional_prob(omega, From, To):
-	return transition_prob(omega, From, To)
-
 
 def total_prob(omega, sample_size, interval, Steps, starting):
 	"""
@@ -191,9 +188,10 @@ interval = sorted(inter)
 l = list(range(0, 120))
 steps = 60
 starting = -4
-init_p = process_initial_prob(2, sample_size, starting, interval[0])
+p = Parallel(n_jobs = num_cores)(delayed(initial_prob)(2, starting, interval[0], i) for i in list(range(0, 20)))
+init_p = np.mean(p)
 trans_p = Parallel(n_jobs = num_cores)(delayed(process_transitional_prob)(2, interval[i], interval[i + 1]) for i in l)
-final_p = init_p + trans_p
+final_p = [init_p] + trans_p
 # flux = Parallel(n_jobs = num_cores)(delayed(process_initial_flux)(i, sample_size, starting, interval[0]) for i in omega)
 np.savetxt("final_p.txt", final_p)
 # np.savetxt("flux.txt", flux)
