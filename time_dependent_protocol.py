@@ -153,11 +153,8 @@ def process_initial_prob(omega, sample_size, From, To):
 			i += 1
 	return np.mean(p_obs) 
 
-def process_transitional_prob(omega, sample_size, From, To):
-	i, p_obs = 0, []
-	while i < sample_size:
-		p_obs += [transition_prob(omega, From, To)]
-	return np.mean(p_obs)
+def process_transitional_prob(omega, From, To):
+	return transition_prob(omega, From, To)
 
 
 def total_prob(omega, sample_size, interval, Steps, starting):
@@ -195,7 +192,7 @@ l = list(range(0, 120))
 steps = 60
 starting = -4
 init_p = process_initial_prob(2, sample_size, starting, interval[0])
-trans_p = Parallel(n_jobs = num_cores)(delayed(process_transitional_prob)(2, sample_size, interval[i], interval[i + 1]) for i in omega)
+trans_p = Parallel(n_jobs = num_cores)(delayed(process_transitional_prob)(2, interval[i], interval[i + 1]) for i in l)
 final_p = init_p + trans_p
 # flux = Parallel(n_jobs = num_cores)(delayed(process_initial_flux)(i, sample_size, starting, interval[0]) for i in omega)
 np.savetxt("final_p.txt", final_p)
