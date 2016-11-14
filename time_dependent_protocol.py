@@ -13,7 +13,7 @@ timestep rescaling factor rescaling_c.
 """
 V_rt = lambda r, t, omega, epsilon: r ** 4 / 4 - 9 / 2 * r ** 2 + epsilon * np.sin(omega * t) * r
 F_1D = lambda r, t, omega, epsilon: - r ** 3 + 9 * r - epsilon * np.sin(omega * t)
-Xi = lambda gamma, beta, m, dt: np.random.normal(scale = np.sqrt(2 * m / beta * (1 - np.exp(- gamma * dt))))
+Xi = lambda gamma, beta, m, dt: np.random.normal(scale = np.sqrt(m / beta * (1 - np.exp(- gamma * dt))))
 rescaling_c = lambda dt, gamma: np.sqrt(2 / gamma / dt * np.tanh(gamma * dt / 2))
 
 def waiting_time(i, total = 10, dt = 0.01, r0 = - 5, m = 1, gamma = 1, epsilon = 2, beta = 1):
@@ -68,7 +68,7 @@ def initial_flux(i, From, To, limit = 0.5, dt = 0.01, m = 1, gamma = 1, epsilon 
 	else:
 		return t_obs, True
 
-def initial_prob(i, From, To, unused, limit = 0.5, dt = 0.01, m = 1, gamma = 1, epsilon = 2, beta = 1):
+def initial_prob(i, From, To, limit = 0.5, dt = 0.01, m = 1, gamma = 1, epsilon = 2, beta = 1):
 	"""
 	Initial probability is calculated by # of reach / total # of attempts.
 	"""
@@ -97,15 +97,13 @@ def transition_prob(i, From, To, limit = 0.05, dt = 0.01, m = 1, gamma = 1, epsi
 		r0 = r0 + p_half * c * dt / m
 		t_obs += dt
 		p = (p_half + F_1D(r0, t_obs, i, epsilon) * c * dt / 2) * np.exp(- gamma * dt / 2) + three_fourth_random
-		if r0 >= To and r0 <= To + limit:
+		if r0 >= To:
 			forward += 1
-			print(r0, forward)
 			r0 = From
 			t_obs = 0
 			p_half, p = 0, 0
-		if r0 <= From and r0 >= From - limit:
+		if r0 <= From:
 			backward += 1
-			print(r0, backward)
 			r0 = From
 			t_obs = 0
 			p_half, p = 0, 0
@@ -161,20 +159,20 @@ def process_transitional_prob(omega, From, To):
 	return transition_prob(omega, From, To)
 
 
-def total_prob(omega, sample_size, interval, Steps, starting):
+def total_prob(omega, sample_size, interval, starting):
 	"""
 	interval describes the range of calculation for transition_prob,
 	Steps describes number of transition_prob we calculated, and 
 	starting is the starting position of the particle.
 	"""
-	difference = (interval[1] - interval[0]) / Steps
 	From = starting
 	To = interval[0]
 	pi_zero = process_initial_prob(omega, sample_size, From, To)
 	final_p, p_track = pi_zero, [pi_zero]
-	while To <= interval[1]:
+	i = 0
+	while i < len(interval):
 		From = To
-		To += difference
+		To = interval[i]
 		trans_p = process_transitional_prob(omega, sample_size, From, To)
 		final_p *= trans_p
 		p_track += [final_p]
@@ -195,13 +193,10 @@ interval = sorted(inter)
 l = list(range(0, 120))
 steps = 60
 starting = -4
-p = Parallel(n_jobs = num_cores)(delayed(initial_prob)(2, starting, interval[0], i) for i in list(range(0, 20)))
-init_p = np.mean(p)
-# trans_p = Parallel(n_jobs = num_cores)(delayed(process_transitional_prob)(2, interval[i], interval[i + 1]) for i in l)
-# final_p = trans_p
-# flux = Parallel(n_jobs = num_cores)(delayed(process_initial_flux)(i, sample_size, starting, interval[0]) for i in omega)
-# np.savetxt("final_p.txt", final_p)
-# np.savetxt("flux.txt", flux)
+final_p = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, interval, starting) for i in omega)
+flux = Parallel(n_jobs = num_cores)(delayed(process_initial_flux)(i, sample_size, starting, interval[0]) for i in omega)
+np.savetxt("final_p.txt", final_p)
+np.savetxt("flux.txt", flux)
 
 
 
