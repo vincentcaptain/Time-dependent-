@@ -173,7 +173,7 @@ def total_prob(omega, sample_size, interval, starting):
 	while i < len(interval):
 		From = To
 		To = interval[i]
-		trans_p = process_transitional_prob(omega, sample_size, From, To)
+		trans_p = process_transitional_prob(omega, From, To)
 		final_p *= trans_p
 		p_track += [final_p]
 	return final_p, p_track
