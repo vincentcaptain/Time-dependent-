@@ -9,7 +9,7 @@
 #SBATCH --partition=savio2
 #
 # Processors:
-#SBATCH --nodes=15
+#SBATCH --nodes=5
 #SBATCH --exclusive
 #
 # Wall clock limit:
