@@ -3,7 +3,7 @@
 #SBATCH --job-name=time_dependent_protocol.py
 #
 # Account:
-#SBATCH --account=sjliang
+#SBATCH --account=co_noneq
 #
 # Partition:
 #SBATCH --partition=savio2
