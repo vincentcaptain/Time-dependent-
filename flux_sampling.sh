@@ -3,18 +3,17 @@
 #SBATCH --job-name=time_dependent_protocol.py
 #
 # Account:
-#SBATCH --account=co_noneq
+#SBATCH --account=sjliang
 #
 # Partition:
 #SBATCH --partition=savio2
 #
+# Processors:
+#SBATCH --nodes=15
+#SBATCH --exclusive
+#
 # Wall clock limit:
 #SBATCH --time=72:00:00
 #
-# Mail type:
-#SBATCH --mail-type=all
-#
-# Mail user:
-#SBATCH --mail-user=vincentcaptain@berkeley.edu
 ## Command(s) to run:
 python2.7 time_dependent_protocol.py
