@@ -176,6 +176,7 @@ def total_prob(omega, sample_size, interval, starting):
 		trans_p = process_transitional_prob(omega, From, To)
 		final_p *= trans_p
 		p_track += [final_p]
+		i += 1
 	return final_p, p_track
 
 def accurate_k(omega, sample_size, interval, starting, final_p):
@@ -193,12 +194,12 @@ interval = sorted(inter)
 l = list(range(0, 120))
 steps = 60
 starting = -4
-result = Parallel(n_jobs = num_cores)(delayed(process_waiting_time)(i) for i in omega)
-final_p = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, interval, starting) for i in omega)
+# result = Parallel(n_jobs = num_cores)(delayed(process_waiting_time)(i) for i in omega)
+# final_p = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, interval, starting) for i in omega)
 # flux = Parallel(n_jobs = num_cores)(delayed(process_initial_flux)(i, sample_size, starting, interval[0]) for i in omega)
-np.savetxt("final_p.txt", final_p)
+# np.savetxt("final_p.txt", final_p)
 # np.savetxt("flux.txt", flux)
-np.savetxt("rate_accurate.txt", result)
+# np.savetxt("rate_accurate.txt", result)
 
 
 
