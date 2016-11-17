@@ -111,7 +111,6 @@ def transition_prob(i, From, To, start, limit = 0.05, dt = 0.001, m = 1, gamma =
 			r0 = From
 			t_obs = 0
 			p_half, p = 0, 0
-		print(forward, backward, r0)
 	return forward / (forward + backward)
 
 
