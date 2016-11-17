@@ -29,6 +29,7 @@ def waiting_time(i, total = 10, dt = 0.001, r0 = - 5, m = 1, gamma = 1, epsilon 
 	"""
 	t_continue, t_collection, left = 0, [0], True
 	p_half, c = 0, rescaling_c(dt, gamma)
+	p = 0
 	indicator_count, p_upper, p_lower, cross_count = 0, 0.05, -0.05, 0
 	while cross_count < total:
 		one_fourth_random = Xi(gamma, beta, m, dt)
@@ -193,16 +194,16 @@ omega = sorted(o)
 num_cores = multiprocessing.cpu_count()
 sample_size = 20
 interval = list(range(1, 61))
-inter = [-i/50 for i in interval] + [i / 50 for i in interval] + [0]
+inter = [-i/20 for i in interval] + [i / 20 for i in interval] + [0]
 interval = sorted(inter)
 l = list(range(0, 120))
 steps = 60
 starting = -4
 result = Parallel(n_jobs = num_cores)(delayed(process_waiting_time)(i) for i in omega)
-final_p = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, interval, starting) for i in omega)
-flux = Parallel(n_jobs = num_cores)(delayed(process_initial_flux)(i, sample_size, starting, interval[0]) for i in omega)
-np.savetxt("final_p.txt", final_p)
-np.savetxt("flux.txt", flux)
+# final_p = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, interval, starting) for i in omega)
+# flux = Parallel(n_jobs = num_cores)(delayed(process_initial_flux)(i, sample_size, starting, interval[0]) for i in omega)
+# np.savetxt("final_p.txt", final_p)
+# np.savetxt("flux.txt", flux)
 np.savetxt("rate_accurate.txt", result)
 
 
