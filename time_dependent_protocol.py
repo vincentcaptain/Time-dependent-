@@ -160,9 +160,6 @@ def process_initial_prob(omega, sample_size, From, To):
 			i += 1
 	return np.mean(p_obs) 
 
-def process_transitional_prob(omega, From, To):
-	return transition_prob(omega, From, To)
-
 
 def total_prob(omega, sample_size, interval, starting):
 	"""
@@ -179,7 +176,7 @@ def total_prob(omega, sample_size, interval, starting):
 		From = To
 		i += 1
 		To = interval[i]
-		trans_p = process_transitional_prob(omega, From, To, starting)
+		trans_p = transition_prob(omega, From, To, starting)
 		final_p *= trans_p
 		p_track += [trans_p]
 	return final_p, p_track
@@ -199,12 +196,12 @@ interval = sorted(inter)
 l = list(range(0, 120))
 steps = 60
 starting = -4
-result = Parallel(n_jobs = num_cores)(delayed(process_waiting_time)(i) for i in omega)
-# final_p = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, interval, starting) for i in omega)
+# result = Parallel(n_jobs = num_cores)(delayed(process_waiting_time)(i) for i in omega)
+final_p = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, interval, starting) for i in omega)
 # flux = Parallel(n_jobs = num_cores)(delayed(process_initial_flux)(i, sample_size, starting, interval[0]) for i in omega)
-# np.savetxt("final_p.txt", final_p)
+np.savetxt("final_p.txt", final_p)
 # np.savetxt("flux.txt", flux)
-np.savetxt("rate_accurate.txt", result)
+# np.savetxt("rate_accurate.txt", result)
 
 
 
