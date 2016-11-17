@@ -196,6 +196,7 @@ interval = sorted(inter)
 l = list(range(0, 120))
 steps = 60
 starting = -4
+transition_prob(2, -1.65, -1.6, -4)
 # result = Parallel(n_jobs = num_cores)(delayed(process_waiting_time)(i) for i in omega)
 # final_p = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, interval, starting) for i in omega)
 # flux = Parallel(n_jobs = num_cores)(delayed(process_initial_flux)(i, sample_size, starting, interval[0]) for i in omega)
