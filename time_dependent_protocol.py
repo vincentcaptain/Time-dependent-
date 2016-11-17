@@ -69,7 +69,7 @@ def initial_flux(i, From, To, limit = 0.5, dt = 0.001, m = 1, gamma = 1, epsilon
 	else:
 		return t_obs, True
 
-def initial_prob(i, From, To, limit = 0.5, dt = 0.001, m = 1, gamma = 1, epsilon = 2, beta = 1):
+def initial_prob(i, From, To, dt = 0.001, m = 1, gamma = 1, epsilon = 2, beta = 1):
 	"""
 	Initial probability is calculated by # of reach / total # of attempts.
 	"""
@@ -84,10 +84,10 @@ def initial_prob(i, From, To, limit = 0.5, dt = 0.001, m = 1, gamma = 1, epsilon
 		t_obs += dt
 		p = (p_half + F_1D(r0, t_obs, i, epsilon) * c * dt / 2) * np.exp(- gamma * dt / 2) + three_fourth_random
 		j += 1
-	if r0 > To + limit:
-		return 1 / j, False
+	if r0 > To:
+		return 1 / j
 	else:
-		return 1 / j, True
+		return 1 / j
 
 def transition_prob(i, From, To, start, limit = 0.05, dt = 0.001, m = 1, gamma = 1, epsilon = 2, beta = 1):
 	forward, backward, r0, t_obs = 0, 0, From, 0
@@ -154,9 +154,8 @@ def process_initial_prob(omega, sample_size, From, To):
 	i, p_obs = 0, []
 	while i < sample_size:
 		p = initial_prob(omega, From, To)
-		if p[1]:
-			p_obs += [p[0]]
-			i += 1
+		p_obs += [p]
+		i += 1
 	return np.mean(p_obs) 
 
 
@@ -171,13 +170,15 @@ def total_prob(omega, sample_size, interval, starting):
 	pi_zero = process_initial_prob(omega, sample_size, From, To)
 	final_p, p_track = pi_zero, [pi_zero]
 	i = 0
+	starting = interval[0]
 	while i < len(interval) - 1:
 		From = To
 		i += 1
 		To = interval[i]
 		trans_p = transition_prob(omega, From, To, starting)
-		final_p *= trans_p
+		final_p += trans_p
 		p_track += [trans_p]
+		print(trans_p)
 	return final_p, p_track
 
 def accurate_k(omega, sample_size, interval, starting, final_p):
@@ -196,9 +197,9 @@ l = list(range(0, 120))
 steps = 60
 starting = -4
 # result = Parallel(n_jobs = num_cores)(delayed(process_waiting_time)(i) for i in omega)
-final_p = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, interval, starting) for i in omega)
+# final_p = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, interval, starting) for i in omega)
 # flux = Parallel(n_jobs = num_cores)(delayed(process_initial_flux)(i, sample_size, starting, interval[0]) for i in omega)
-np.savetxt("final_p.txt", final_p)
+# np.savetxt("final_p.txt", final_p)
 # np.savetxt("flux.txt", flux)
 # np.savetxt("rate_accurate.txt", result)
 
