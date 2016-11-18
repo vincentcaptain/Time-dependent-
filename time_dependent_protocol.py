@@ -17,7 +17,7 @@ F_1D = lambda r, t, omega, epsilon: - r ** 3 + 9 * r - epsilon * np.sin(omega * 
 Xi = lambda gamma, beta, m, dt: np.random.normal(scale = np.sqrt(m / beta * (1 - np.exp(- gamma * dt))))
 rescaling_c = lambda dt, gamma: np.sqrt(2 / gamma / dt * np.tanh(gamma * dt / 2))
 
-def waiting_time(i, total = 10, dt = 0.001, r0 = - 5, m = 1, gamma = 1, epsilon = 2, beta = 1):
+def waiting_time(i, total = 10, dt = 0.001, r0 = - 4, m = 1, gamma = 1, epsilon = 2, beta = 1):
 	"""
 	Parameters required for this simulation: time difference dt, initial position
 	r0, mass of particle m, damping constant gamma, time-dependent part Parameter
@@ -30,7 +30,7 @@ def waiting_time(i, total = 10, dt = 0.001, r0 = - 5, m = 1, gamma = 1, epsilon 
 	"""
 	t_continue, t_collection, left = 0, [0], True
 	p_half, c = 0, rescaling_c(dt, gamma)
-	p = np.random.normal(scale = max(1,np.sqrt(-V_rt(From, 0, i, 2)/beta)))
+	p = np.random.normal(scale = max(1,np.sqrt(-V_rt(r0, 0, i, 2)/beta)))
 	indicator_count, p_upper, p_lower, cross_count = 0, 0.05, -0.05, 0
 	while cross_count < total:
 		one_fourth_random = Xi(gamma, beta, m, dt)
