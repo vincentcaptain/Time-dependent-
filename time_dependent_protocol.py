@@ -201,9 +201,9 @@ sample_size = 20
 r = list(range(1, 100))
 starting = -4
 # result = Parallel(n_jobs = num_cores)(delayed(process_waiting_time)(i) for i in omega)
-final_p = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, starting) for i in omega)
+# final_p = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, starting) for i in omega)
 # flux = Parallel(n_jobs = num_cores)(delayed(process_initial_flux)(i, sample_size, starting, calc_interval(r, i)[0]) for i in omega)
-np.savetxt("final_p.txt", final_p)
+# np.savetxt("final_p.txt", final_p)
 # np.savetxt("flux.txt", flux)
 # np.savetxt("rate_accurate.txt", result)
 
