@@ -1,7 +1,7 @@
 import numpy as np
-# import matplotlib.pyplot as plt
-# import matplotlib.mlab as mlab
-# from matplotlib.backends.backend_pdf import PdfPages
+import matplotlib.pyplot as plt
+import matplotlib.mlab as mlab
+from matplotlib.backends.backend_pdf import PdfPages
 from joblib import Parallel, delayed
 import multiprocessing
 
@@ -193,8 +193,8 @@ def accurate_k(omega, sample_size, interval, starting, final_p):
 	flux = process_initial_flux(omega, sample_size, starting, interval[0])
 	return flux * final_p
 		
-omega = list(range(1, 75))
-o = [-i/10 for i in omega] + [i/10 for i in omega]
+omega = list(range(1, 5))
+o = [-i for i in omega] + [i for i in omega]
 omega = sorted(o)
 num_cores = multiprocessing.cpu_count()
 sample_size = 20
