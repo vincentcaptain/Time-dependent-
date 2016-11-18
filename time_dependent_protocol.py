@@ -187,7 +187,6 @@ def total_prob(omega, sample_size, starting):
 		trans_p = transition_prob(omega, From, To, starting)
 		final_p *= trans_p
 		p_track += [final_p]
-		print(trans_p)
 	return final_p, p_track
 
 def accurate_k(omega, sample_size, interval, starting, final_p):
