@@ -187,14 +187,14 @@ def total_prob(omega, sample_size, starting):
 		trans_p = transition_prob(omega, From, To, starting)
 		final_p *= trans_p
 		p_track += [final_p]
-	return final_p, p_track
+	return final_p
 
 def accurate_k(omega, sample_size, interval, starting, final_p):
 	flux = process_initial_flux(omega, sample_size, starting, interval[0])
 	return flux * final_p
 		
 omega = list(range(1, 75))
-o = [-i/10 for i in omega] + [i / 10 for i in omega]
+o = [-i/10 for i in omega] + [i/10 for i in omega]
 omega = sorted(o)
 num_cores = multiprocessing.cpu_count()
 sample_size = 20
@@ -202,9 +202,8 @@ r = list(range(1, 100))
 starting = -4
 # result = Parallel(n_jobs = num_cores)(delayed(process_waiting_time)(i) for i in omega)
 final_p = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, starting) for i in omega)
-p = [i[0] for i in final_p]
 # flux = Parallel(n_jobs = num_cores)(delayed(process_initial_flux)(i, sample_size, starting, calc_interval(r, i)[0]) for i in omega)
-np.savetxt("final_p.txt", p)
+np.savetxt("final_p.txt", final_p)
 # np.savetxt("flux.txt", flux)
 # np.savetxt("rate_accurate.txt", result)
 
