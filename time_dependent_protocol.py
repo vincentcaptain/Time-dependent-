@@ -75,7 +75,7 @@ def initial_prob(i, From, To, sample_size, dt = 0.01, m = 1, gamma = 1, epsilon 
 	"""
 	Initial probability is calculated by # of reach / total # of attempts.
 	"""
-	r0, j, t_obs = From, 0, 0
+	r0, j, t_obs = From, dt, 0
 	p_half, c = 0, rescaling_c(dt, gamma)
 	p = np.random.normal(scale = np.sqrt(m/beta))
 	total, p_re, p_collection, t_collection = 0, [], [], []
