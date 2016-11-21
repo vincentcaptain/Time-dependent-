@@ -1,6 +1,6 @@
 import numpy as np
-# import matplotlib.pyplot as plt
-# import matplotlib.mlab as mlab
+import matplotlib.pyplot as plt
+import matplotlib.mlab as mlab
 # from matplotlib.backends.backend_pdf import PdfPages
 from joblib import Parallel, delayed
 import multiprocessing
@@ -98,12 +98,12 @@ def initial_prob(i, From, To, sample_size, dt = 0.01, m = 1, gamma = 1, epsilon 
 	print(np.mean(p_re)/(1-np.mean(p_re)))
 	return np.mean(p_re), p_collection, t_collection
 
-def transition_prob(i, From, To, start, p_collection, t_collection, limit = 0.05, dt = 0.01, m = 1, gamma = 1, epsilon = 2, beta = 1):
+def transition_prob(i, From, To, sample_size, start, p_collection, t_collection, limit = 0.05, dt = 0.01, m = 1, gamma = 1, epsilon = 2, beta = 1):
 	forward, backward, r0, t_obs = 0, 0, From, random.choice(t_collection)
 	p_half, c = 0, rescaling_c(dt, gamma)
 	p = p_collection[t_collection.index(t_obs)]
 	p_collection1, t_collection1 = [], []
-	while forward < 20:
+	while forward < sample_size:
 		while From <= r0 <= To:
 			one_fourth_random = Xi(gamma, beta, m, dt)
 			three_fourth_random = Xi(gamma, beta, m, dt)
@@ -182,9 +182,8 @@ def total_prob(omega, sample_size, interval, starting):
 		From = To
 		i += 1
 		To = interval[i]
-		trans = transition_prob(omega, From, To, starting, p_collection, t_collection)
+		trans = transition_prob(omega, From, To, sample_size, starting, p_collection, t_collection)
 		trans_p = trans[0]
-		print(trans_p)
 		p_collection = trans[1]
 		t_collection = trans[2]
 		final_p *= trans_p
@@ -199,7 +198,7 @@ omega = list(range(1, 75))
 o = [-i/10 for i in omega] + [i/10 for i in omega]
 omega = sorted(o)
 num_cores = multiprocessing.cpu_count()
-sample_size = 20
+sample_size = 2000
 r = list(range(1, 13))
 starting = -3
 rl = [-i / 5 for i in r] + [i / 5 for i in r] + [0]

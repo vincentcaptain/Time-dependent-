@@ -13,7 +13,7 @@
 #SBATCH --exclusive
 #
 # Wall clock limit:
-#SBATCH --time=72:00:00
+#SBATCH --time=12:00:00
 #
 ## Command(s) to run:
 python2.7 time_dependent_protocol.py
