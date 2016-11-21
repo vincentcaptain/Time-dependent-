@@ -1,0 +1,94 @@
+Traceback (most recent call last):
+  File "time_dependent_protocol.py", line 208, in <module>
+    logfinal_p = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, r, starting) for i in omega)
+  File "/global/home/users/sjliang/.local/lib/python2.7/site-packages/joblib/parallel.py", line 768, in __call__
+    self.retrieve()
+  File "/global/home/users/sjliang/.local/lib/python2.7/site-packages/joblib/parallel.py", line 719, in retrieve
+    raise exception
+joblib.my_exceptions.JoblibZeroDivisionError: JoblibZeroDivisionError
+___________________________________________________________________________
+Multiprocessing exception:
+...........................................................................
+/global/home/users/sjliang/repo/time_dependent_protocol.py in <module>()
+    203 starting = -3
+    204 rl = [-i / 5 for i in r] + [i / 5 for i in r] + [0]
+    205 r = sorted(rl)
+    206 
+    207 # result = Parallel(n_jobs = num_cores)(delayed(process_waiting_time)(i) for i in omega)
+--> 208 logfinal_p = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, r, starting) for i in omega)
+    209 # flux = Parallel(n_jobs = num_cores)(delayed(process_initial_flux)(i, sample_size, r, starting for i in omega)
+    210 np.savetxt("logfinal_p.txt", logfinal_p)
+    211 # np.savetxt("flux.txt", flux)
+    212 # np.savetxt("rate_accurate.txt", result)
+
+...........................................................................
+/global/home/users/sjliang/.local/lib/python2.7/site-packages/joblib/parallel.py in __call__(self=Parallel(n_jobs=24), iterable=<generator object <genexpr>>)
+    763             if pre_dispatch == "all" or n_jobs == 1:
+    764                 # The iterable was consumed all at once by the above for loop.
+    765                 # No need to wait for async callbacks to trigger to
+    766                 # consumption.
+    767                 self._iterating = False
+--> 768             self.retrieve()
+        self.retrieve = <bound method Parallel.retrieve of Parallel(n_jobs=24)>
+    769             # Make sure that we get a last message telling us we are done
+    770             elapsed_time = time.time() - self._start_time
+    771             self._print('Done %3i out of %3i | elapsed: %s finished',
+    772                         (len(self._output), len(self._output),
+
+---------------------------------------------------------------------------
+Sub-process traceback:
+---------------------------------------------------------------------------
+ZeroDivisionError                                  Mon Nov 21 15:41:47 2016
+PID: 3903Python 2.7.8: /global/software/sl-6.x86_64/modules/langs/python/2.7.8/bin/python2.7
+...........................................................................
+/global/home/users/sjliang/.local/lib/python2.7/site-packages/joblib/parallel.py in __call__(self=<joblib.parallel.BatchedCalls object>)
+    126     def __init__(self, iterator_slice):
+    127         self.items = list(iterator_slice)
+    128         self._size = len(self.items)
+    129 
+    130     def __call__(self):
+--> 131         return [func(*args, **kwargs) for func, args, kwargs in self.items]
+        func = <function total_prob>
+        args = (-8, 2000, [-3, -3, -2, -2, -2, -2, -2, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 1, 1, 1, ...], -3)
+        kwargs = {}
+        self.items = [(<function total_prob>, (-8, 2000, [-3, -3, -2, -2, -2, -2, -2, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 1, 1, 1, ...], -3), {})]
+    132 
+    133     def __len__(self):
+    134         return self._size
+    135 
+
+...........................................................................
+/global/home/users/sjliang/repo/time_dependent_protocol.py in total_prob(omega=-8, sample_size=2000, interval=[-3, -3, -2, -2, -2, -2, -2, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 1, 1, 1, ...], starting=-3)
+    169 	Steps describes number of transition_prob we calculated, and 
+    170 	starting is the starting position of the particle.
+    171 	"""
+    172 	From = starting
+    173 	To = interval[0]
+--> 174 	pi = initial_prob(omega, From, To, sample_size)
+        pi = undefined
+        omega = -8
+        From = -3
+        To = -3
+        sample_size = 2000
+    175 	pi_zero = pi[0]
+    176 	p_collection = pi[1]
+    177 	t_collection = pi[2]
+    178 	final_p, p_track = pi_zero, [pi_zero]
+
+...........................................................................
+/global/home/users/sjliang/repo/time_dependent_protocol.py in initial_prob(i=-8, From=-3, To=-3, sample_size=2000, dt=0.01, m=1, gamma=1, epsilon=2, beta=1)
+     86 			p_half = p * np.exp(- gamma * dt / 2) + one_fourth_random + F_1D(r0, t_obs, i, epsilon) * c * dt / 2
+     87 			r0 = r0 + p_half * c * dt / m
+     88 			t_obs += dt
+     89 			p = (p_half + F_1D(r0, t_obs, i, epsilon) * c * dt / 2) * np.exp(- gamma * dt / 2) + three_fourth_random
+     90 			j += dt
+---> 91 		p_re += [1 / j]
+        p_re = []
+        j = 0
+     92 		p_collection += [p]
+     93 		t_collection += [t_obs]
+     94 		total += 1
+     95 		r0, j, t_obs = From, 1, 0
+
+ZeroDivisionError: integer division or modulo by zero
+___________________________________________________________________________

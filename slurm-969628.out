@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "time_dependent_protocol.py", line 206, in <module>
-    np.savetxt("final_p.txt", final_p)
-  File "/global/software/sl-6.x86_64/modules/python/2.7.8/numpy/1.9.0/lib/python2.7/site-packages/numpy/lib/npyio.py", line 1031, in savetxt
-    X = np.asarray(X)
-  File "/global/software/sl-6.x86_64/modules/python/2.7.8/numpy/1.9.0/lib/python2.7/site-packages/numpy/core/numeric.py", line 462, in asarray
-    return array(a, dtype, copy=False, order=order)
-ValueError: setting an array element with a sequence.
