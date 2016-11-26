@@ -88,6 +88,7 @@ def initial_prob(i, From, To, sample_size, dt = 0.01, m = 1, gamma = 1, epsilon 
 			t_obs += dt
 			p = (p_half + F_1D(r0, t_obs, i, epsilon) * c * dt / 2) * np.exp(- gamma * dt / 2) + three_fourth_random
 			j += dt
+		print(total)
 		p_re += [1 / j]
 		p_collection += [p]
 		t_collection += [t_obs]
@@ -188,6 +189,7 @@ def total_prob(omega, sample_size, interval, starting):
 		t_collection = trans[2]
 		final_p *= trans_p
 		p_track += [trans_p]
+		print(final_p)
 	return np.log(final_p)
 
 def accurate_k(omega, sample_size, interval, starting, final_p):
@@ -199,11 +201,9 @@ o = [-i/10 for i in omega] + [i/10 for i in omega]
 omega = sorted(o)
 num_cores = multiprocessing.cpu_count()
 sample_size = 2000
-r = list(range(1, 13))
 starting = -3
-rl = [-i / 5 for i in r] + [i / 5 for i in r] + [0]
-r = sorted(rl)
-
+r = [-2, -1.8, -1.6, -1.4, -1.2, -1, -0.8, -0.6, -0.4, -0.2, 0, 0.5, 1, 1.5, 2]
+# r = [-2, -1.8]
 # result = Parallel(n_jobs = num_cores)(delayed(process_waiting_time)(i) for i in omega)
 logfinal_p = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, r, starting) for i in omega)
 # flux = Parallel(n_jobs = num_cores)(delayed(process_initial_flux)(i, sample_size, r, starting for i in omega)
@@ -213,8 +213,11 @@ np.savetxt("logfinal_p.txt", logfinal_p)
 
 
 
-
-
+import time
+start = time.time()
+x = total_prob(0, sample_size, r, starting)
+end = time.time()
+print(end - start)
 
 
 
