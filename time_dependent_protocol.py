@@ -88,7 +88,6 @@ def initial_prob(i, From, To, sample_size, dt = 0.01, m = 1, gamma = 1, epsilon 
 			t_obs += dt
 			p = (p_half + F_1D(r0, t_obs, i, epsilon) * c * dt / 2) * np.exp(- gamma * dt / 2) + three_fourth_random
 			j += dt
-		print(total)
 		p_re += [1 / j]
 		p_collection += [p]
 		t_collection += [t_obs]
@@ -96,7 +95,6 @@ def initial_prob(i, From, To, sample_size, dt = 0.01, m = 1, gamma = 1, epsilon 
 		r0, j, t_obs = From, 1, 0
 		p_half, c = 0, rescaling_c(dt, gamma)
 		p = np.random.normal(scale = np.sqrt(m/beta))
-	print(np.mean(p_re)/(1-np.mean(p_re)))
 	return np.mean(p_re), p_collection, t_collection
 
 def transition_prob(i, From, To, sample_size, start, p_collection, t_collection, limit = 0.05, dt = 0.01, m = 1, gamma = 1, epsilon = 2, beta = 1):
@@ -189,7 +187,6 @@ def total_prob(omega, sample_size, interval, starting):
 		t_collection = trans[2]
 		final_p *= trans_p
 		p_track += [trans_p]
-		print(final_p)
 	return np.log(final_p)
 
 def accurate_k(omega, sample_size, interval, starting, final_p):
@@ -211,13 +208,6 @@ np.savetxt("logfinal_p.txt", logfinal_p)
 # np.savetxt("flux.txt", flux)
 # np.savetxt("rate_accurate.txt", result)
 
-
-
-import time
-start = time.time()
-x = total_prob(0, sample_size, r, starting)
-end = time.time()
-print(end - start)
 
 
 
