@@ -214,7 +214,7 @@ logfinal = total_prob(0, sample_size, r, starting)
 # logfinal_p9 = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, r, starting) for i in omega)
 # logfinal_p10 = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, r, starting) for i in omega)
 # flux = Parallel(n_jobs = num_cores)(delayed(process_initial_flux)(i, sample_size, r, starting for i in omega)
-np.savetxt("logfinal_p.txt", logfinal)
+np.savetxt("logfinal_p.txt", [logfinal])
 # np.savetxt("flux.txt", flux)
 # np.savetxt("rate_accurate.txt", result)
 
