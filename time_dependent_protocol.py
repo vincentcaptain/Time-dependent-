@@ -187,7 +187,7 @@ def total_prob(omega, sample_size, interval, starting):
 		t_collection = trans[2]
 		final_p *= trans_p
 		p_track += [trans_p]
-	return final_p
+	return final_p * 10 ** 10
 
 def accurate_k(omega, sample_size, interval, starting, final_p):
 	flux = process_initial_flux(omega, sample_size, starting, interval[0])
