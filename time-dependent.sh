@@ -12,10 +12,10 @@
 #SBATCH --nodes=1
 #
 # Processors per task:
-#SBATCH --cpus-per-task=20
+#SBATCH --cpus-per-task=24
 #
 # Wall clock limit:
-#SBATCH --time=100:00:00
+#SBATCH --time=250:00:00
 #
 # Mail type:
 #SBATCH --mail-type=all
