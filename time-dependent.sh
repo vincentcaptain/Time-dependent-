@@ -15,7 +15,7 @@
 #SBATCH --cpus-per-task=20
 #
 # Wall clock limit:
-#SBATCH --time=20:00:00
+#SBATCH --time=100:00:00
 #
 # Mail type:
 #SBATCH --mail-type=all

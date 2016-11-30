@@ -1,4 +1,5 @@
 import numpy as np
+from __future__ import division
 # import matplotlib.pyplot as plt
 # import matplotlib.mlab as mlab
 # from matplotlib.backends.backend_pdf import PdfPages
@@ -185,7 +186,7 @@ def total_prob(omega, sample_size, interval, starting):
 		trans_p = trans[0]
 		p_collection = trans[1]
 		t_collection = trans[2]
-		final_p *= trans_p * 10
+		final_p *= trans_p
 		p_track += [trans_p]
 	return final_p, i
 
@@ -200,21 +201,16 @@ num_cores = multiprocessing.cpu_count()
 sample_size = 2000
 starting = -3
 r = [-2, -1.8, -1.6, -1.4, -1.2, -1, -0.8, -0.6, -0.4, -0.2, 0, 0.5, 1, 1.5, 2]
-logfinal = total_prob(0, sample_size, r, starting)
 # r = [-2, -1.8]
 # result = Parallel(n_jobs = num_cores)(delayed(process_waiting_time)(i) for i in omega)
-# logfinal_p1 = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, r, starting) for i in omega)
-# logfinal_p2 = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, r, starting) for i in omega)
-# logfinal_p3 = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, r, starting) for i in omega)
-# logfinal_p4 = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, r, starting) for i in omega)
-# logfinal_p5 = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, r, starting) for i in omega)
-# logfinal_p6 = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, r, starting) for i in omega)
-# logfinal_p7 = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, r, starting) for i in omega)
-# logfinal_p8 = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, r, starting) for i in omega)
-# logfinal_p9 = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, r, starting) for i in omega)
-# logfinal_p10 = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, r, starting) for i in omega)
+a = 0
+final_p = []
+while a < 200:
+	final_pi = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, r, starting) for i in omega)
+	final_p += [final_pi]
+
 # flux = Parallel(n_jobs = num_cores)(delayed(process_initial_flux)(i, sample_size, r, starting for i in omega)
-np.savetxt("logfinal_p.txt", [logfinal])
+np.savetxt("logfinal_p.txt", final_p)
 # np.savetxt("flux.txt", flux)
 # np.savetxt("rate_accurate.txt", result)
 
