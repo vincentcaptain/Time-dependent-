@@ -1,5 +1,6 @@
-import numpy as np
 from __future__ import division
+import numpy as np
+
 # import matplotlib.pyplot as plt
 # import matplotlib.mlab as mlab
 # from matplotlib.backends.backend_pdf import PdfPages
