@@ -205,13 +205,10 @@ r = [-2, -1.8, -1.6, -1.4, -1.2, -1, -0.8, -0.6, -0.4, -0.2, 0, 0.5, 1, 1.5, 2]
 # r = [-2, -1.8]
 # result = Parallel(n_jobs = num_cores)(delayed(process_waiting_time)(i) for i in omega)
 a = 0
-final_p = []
-while a < 200:
-	final_pi = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, r, starting) for i in omega)
-	final_p += [final_pi]
+final_pi = Parallel(n_jobs = num_cores)(delayed(total_prob)(i, sample_size, r, starting) for i in omega)
 
 # flux = Parallel(n_jobs = num_cores)(delayed(process_initial_flux)(i, sample_size, r, starting for i in omega)
-np.savetxt("logfinal_p.txt", final_p)
+np.savetxt("logfinal_p_test.txt", final_pi)
 # np.savetxt("flux.txt", flux)
 # np.savetxt("rate_accurate.txt", result)
 
