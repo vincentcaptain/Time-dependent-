@@ -211,7 +211,7 @@ while a < 40:
 	final_p += [final_pi]
 
 # flux = Parallel(n_jobs = num_cores)(delayed(process_initial_flux)(i, sample_size, r, starting for i in omega)
-np.savetxt("logfinal_p_short.txt", final_p)
+np.savetxt("logfinal_p_short40.txt", final_p)
 # np.savetxt("flux.txt", flux)
 # np.savetxt("rate_accurate.txt", result)
 
