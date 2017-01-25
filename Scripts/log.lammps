@@ -1,0 +1,28 @@
+LAMMPS (17 Nov 2016)
+# sample LAMMPS input script for diffusion of 2d LJ liquid
+# mean-squared displacement via compute msd
+
+# settings
+
+variable	x equal 15
+variable	y equal 15
+
+variable	rho equal 0.6
+variable        t equal 1.0
+variable	rc equal 2.5
+
+# problem setup
+
+units		lj
+dimension	2
+atom_style	atomic
+neigh_modify	delay 0 every 1
+
+lattice         sq2 ${rho}
+lattice         sq2 0.6
+Lattice spacing in x,y,z = 1.82574 1.82574 1.82574
+
+pair_style      lj/cut ${rc}
+pair_style      lj/cut 2.5
+pair_coeff      * * 1 1
+ERROR: Pair_coeff command before simulation box is defined (../input.cpp:1762)
